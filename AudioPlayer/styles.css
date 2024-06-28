@@ -261,3 +261,17 @@
   background: white;
   border-radius: 50%;
 }
+
+.card {
+  min-width: 90%;
+  background: #1c1a22;
+  color: #fff;
+}
+.card:hover {
+  background: #1c1a22;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+}

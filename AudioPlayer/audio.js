@@ -1,6 +1,19 @@
+import cardRenderer from "./cards.js";
+
 export default function createAudioPlayer(containerId, playlist) {
+  const container = document.getElementById(containerId);
+  if (!container) {
+    console.error("Container not found");
+    return;
+  }
+  if (playlist.length === 0) {
+    alert("No music to play :(");
+    return;
+  }
+
   // GLOBAL
   let currentTrackIndex = 0;
+
   // SETUP ELEMENTS
   const trackContainer = document.getElementById("track-container");
   const nowPlaying = document.getElementById("now-playing");
@@ -126,5 +139,6 @@ export default function createAudioPlayer(containerId, playlist) {
     }
     return button;
   }
-  console.log(playlist);
+
+  cardRenderer(".cards-container", playlist);
 }
