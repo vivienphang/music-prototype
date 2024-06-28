@@ -43,6 +43,7 @@ export default function createAudioPlayer(containerId, playlist) {
     trackTitle.innerText = `Now playing: ${track.title}`;
     audioPlayer.src = track.src;
     audioPlayer.load();
+    // audioPlayer.play();
   }
 
   // INITIALIZE TRACK
@@ -52,7 +53,7 @@ export default function createAudioPlayer(containerId, playlist) {
     const { index } = e.detail;
     currentTrackIndex = index;
     updateTrackInfo(currentTrackIndex);
-    playButton.innerHTML = "❚❚";
+    // playButton.innerHTML = "❚❚";
   });
 
   // UPDATE TIME DISPLAY
@@ -103,15 +104,19 @@ export default function createAudioPlayer(containerId, playlist) {
   const nextButton = createButton("⏭", () => {
     currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
     updateTrackInfo(currentTrackIndex);
+    audioPlayer.play();
     playButton.innerHTML = "❚❚";
   });
 
   const backButton = createButton("⏮", () => {
     if (currentTrackIndex > 0) {
-      updateTrackInfo(--currentTrackIndex);
+      currentTrackIndex--;
     } else {
-      audioPlayer.currentTime = 0;
+      // loop back to the last track
+      currentTrackIndex = playlist.length - 1;
     }
+    updateTrackInfo(currentTrackIndex);
+    audioPlayer.play();
     playButton.innerHTML = "❚❚";
   });
   controls.append(backButton, playButton, stopButton, nextButton);
