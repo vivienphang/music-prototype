@@ -22,3 +22,11 @@ Part 2
 - Implement interactive functionality for the progress bar.
 - Enhance mobile responsiveness.
 
+## Installation
+
+1. Clone the repository
+`git clone https://github.com/vivienphang/music-prototype.git`
+
+2. Launch `index.html` file
+   - Click GoLive in VSCode or
+   - In VSCode terminal, enter `open index.html`
