@@ -20,11 +20,37 @@
       <h1>Sample Music</h1>
       <div id="music-container">
         <div id="music-playlist">
+          <div class="turntable">
+            <div class="record">
+              <div class="inner"></div>
+            </div>
+            <div class="overlay"></div>
+            <div class="arm-holder">
+              <div class="arm"></div>
+            </div>
+            <div class="dial"></div>
+          </div>
           <div id="now-playing"></div>
           <div id="track-container">
             <audio id="audio-player"></audio>
 
-            <div class="controls"></div>
+            <div class="media-player">
+              <div class="time">
+                <div id="start-time"></div>
+                <div id="time-left"></div>
+              </div>
+              <div class="progress-container">
+                <div id="progress-bar"></div>
+              </div>
+
+              <div class="controls">
+                <!-- control progress bar here -->
+              </div>
+            </div>
+
+            <div class="controls">
+              <!-- control buttons here -->
+            </div>
           </div>
         </div>
       </div>

@@ -5,6 +5,10 @@ export default function createAudioPlayer(containerId, playlist) {
   const trackContainer = document.getElementById("track-container");
   const nowPlaying = document.getElementById("now-playing");
   const audioPlayer = document.getElementById("audio-player");
+  const progressBar = document.getElementById("progress-bar");
+  const startTime = document.getElementById("start-time");
+  const timeLeft = document.getElementById("time-left");
+
   const trackTitle = document.createElement("h2");
   const controls = document.createElement("div");
 
@@ -36,6 +40,42 @@ export default function createAudioPlayer(containerId, playlist) {
     currentTrackIndex = index;
     updateTrackInfo(currentTrackIndex);
     playButton.innerHTML = "❚❚";
+  });
+
+  // UPDATE TIME DISPLAY
+  function updateTimeDisplay() {
+    const currentTime = audioPlayer.currentTime;
+    const minutes = Math.floor(currentTime / 60);
+    const seconds = Math.floor(currentTime % 60);
+    startTime.textContent = `${pad(minutes)}:${pad(seconds)}`;
+  }
+
+  function pad(number) {
+    return number.toString().padStart(2, "0");
+  }
+
+  audioPlayer.addEventListener("timeupdate", updateTimeDisplay);
+
+  // TABULATE TIME ONCE MEDIA IS LOADED
+  audioPlayer.onloadedmetadata = function () {
+    const totalMinutes = Math.floor(this.duration / 60);
+    const totalSeconds = Math.floor(this.duration % 60);
+    timeLeft.textContent = `-${String(totalMinutes).padStart(2, "0")}:${String(
+      totalSeconds
+    ).padStart(2, "0")}`;
+  };
+
+  // UPDATE PROGRESS BAR WHEN PLAYED
+  audioPlayer.addEventListener("timeupdate", function () {
+    if (isNaN(this.duration)) return;
+    const percentage = (this.currentTime / this.duration) * 100;
+    progressBar.style.width = `${percentage}%`;
+    const remaining = this.duration - this.currentTime;
+    const minutes = Math.floor(remaining / 60);
+    const seconds = Math.floor(remaining % 60);
+    timeLeft.textContent = `-${String(minutes).padStart(2, "0")}:${String(
+      seconds
+    ).padStart(2, "0")}`;
   });
 
   // BUTTON CONTROL HANDLERS
