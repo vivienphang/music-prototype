@@ -17,7 +17,17 @@
 
     <section>
       <h1>All Posts</h1>
-      <div class="all-posts"></div>
+      <div class="all-posts">
+        <div>
+          <button onclick="sortPosts()">Sort Alphabetically</button>
+        </div>
+        <div>
+          <input type="number" id="userId" placeholder="Enter User ID" />
+          <button onclick="groupByUserId()">Group by User ID</button>
+          <button onclick="clearFilter()">Clear Filter</button>
+        </div>
+      </div>
+      <div id="loadingIndicator" class="loader"></div>
       <div class="posts-container"></div>
     </section>
     <script src="index.js"></script>
