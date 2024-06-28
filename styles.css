@@ -156,3 +156,7 @@ button:active {
     -webkit-mask: conic-gradient(#0000 360deg, #000 0);
   }
 }
+
+.pagination {
+  margin: 24px;
+}

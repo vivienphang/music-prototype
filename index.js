@@ -1,15 +1,19 @@
 // GLOBAL
 let posts = [];
 let isSortAscending = false;
+let currentPage = 1;
+let currentPagePosts = [];
+const postsPerPage = 5;
 
 window.onload = () => {
-  const loadingIndicator = document.getElementById("loadingIndicator");
+  const loadingIndicator = document.querySelector(".loader");
   loadingIndicator.style.display = "block";
+
   fetch("https://jsonplaceholder.typicode.com/posts")
     .then((response) => response.json())
     .then((data) => {
       posts = data;
-      displayPosts(posts);
+      displayPosts(posts, 1);
       loadingIndicator.style.display = "none";
     })
     .catch((err) => {
@@ -18,38 +22,59 @@ window.onload = () => {
     });
 };
 
-function displayPosts(posts) {
-  const container = document.querySelector(".posts-container");
-  container.innerHTML =
-    posts.length > 0
-      ? posts
-          .map(
-            (post) => `
-            <div class="card" key="${post.id}">
-              <div class="content">
-              <h3>${post.title}</h3>
-              <p>${post.body}</p>
-              </div>
-            </div>`
-          )
-          .join("")
-      : "<div class='no-posts'>No posts available</div>";
+function displayPosts(posts, page) {
+  const startIndex = (page - 1) * postsPerPage;
+  const endIndex = startIndex + postsPerPage;
+  const postsToShow = posts.slice(startIndex, endIndex);
+
+  updatePageInfo(page, posts.length);
+  renderPostCards(postsToShow);
+  updatePagination();
 }
 
-// SORT AND FILTER FUNCTIONS
+// PAGINATION HANDLER
+function updatePageInfo(page, totalPosts) {
+  const totalPages = Math.ceil(totalPosts / postsPerPage);
+  document.getElementById(
+    "page-info"
+  ).textContent = `Page ${page} of ${totalPages}`;
+}
+
+function goToPage(page) {
+  // Check between filtered or full posts
+  const activePosts = currentPagePosts.length > 0 ? currentPagePosts : posts;
+  const totalPages = Math.ceil(activePosts.length / postsPerPage);
+
+  if (page < 1 || page > totalPages) return;
+
+  currentPage = page;
+  displayPosts(activePosts, page);
+}
+
+function updatePagination() {
+  const activePosts = currentPagePosts.length > 0 ? currentPagePosts : posts;
+  const totalPages = Math.ceil(activePosts.length / postsPerPage);
+
+  document.getElementById(
+    "page-info"
+  ).textContent = `Page ${currentPage} of ${totalPages}`;
+  document.getElementById("prev-button").disabled = currentPage <= 1;
+  document.getElementById("next-button").disabled = currentPage >= totalPages;
+}
+
+// SORT AND FILTER HANDLER
 function sortPosts() {
-  if (!posts || !posts.length) {
-    console.error("Posts are not loaded or are empty");
-    return;
-  }
+  let postsToSort = currentPagePosts.length ? currentPagePosts : posts;
+  isSortAscending = !isSortAscending;
 
   if (isSortAscending) {
-    posts.sort((a, b) => a.title.localeCompare(b.title));
+    postsToSort.sort((a, b) => a.title.localeCompare(b.title));
   } else {
-    posts.sort((a, b) => b.title.localeCompare(a.title));
+    postsToSort.sort((a, b) => b.title.localeCompare(a.title));
   }
-  isSortAscending = !isSortAscending;
-  displayPosts(posts);
+  currentPage = 1;
+  displayPosts(postsToSort, 1);
+  updatePagination();
 }
 
 function groupByUserId() {
@@ -64,7 +89,11 @@ function groupByUserId() {
     alert("No posts found for this User ID.");
     return;
   }
-  displayPosts(filteredPosts);
+
+  currentPagePosts = filteredPosts;
+  currentPage = 1;
+  displayPosts(currentPagePosts, currentPage);
+  updatePagination();
 }
 
 function clearFilter() {
@@ -74,6 +103,26 @@ function clearFilter() {
   isSortAscending = false;
 
   // Revert to default
-  displayPosts(posts);
+  displayPosts(posts, currentPage);
+  updatePagination();
   document.getElementById("userId").value = "";
+}
+
+// RENDER COMPONENT HANDLER
+function renderPostCards(postsToShow) {
+  const container = document.querySelector(".posts-container");
+  container.innerHTML =
+    postsToShow.length > 0
+      ? postsToShow
+          .map(
+            (post) => `
+            <div class="card" key="${post.id}">
+              <div class="content">
+              <h3>${post.title}</h3>
+              <p>${post.body}</p>
+              </div>
+            </div>`
+          )
+          .join("")
+      : "<div class='no-posts'>No posts available</div>";
 }
